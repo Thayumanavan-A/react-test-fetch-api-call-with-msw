@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Table } from "react-bootstrap";
+import axios from "axios";
 
 export const todoUrl = "https://jsonplaceholder.typicode.com/todos";
 export const userUrl = "https://jsonplaceholder.typicode.com/users";
@@ -10,18 +11,21 @@ const TodoList = () => {
 
   useEffect(() => retrieveTodos(), []);
 
-  const retrieveTodos = async () => {
-    const todoResponse = await fetch(todoUrl);
-    const userResponse = await fetch(userUrl);
+  const retrieveTodos =  async () => {
+    const todoResponse = await axios.get(todoUrl)
+                                    .then((res) => res.data)
+                                    .catch((res) => console.log(res.status));
+    const userResponse = await axios.get(userUrl)
+                                    .then((res)=> res.data);
 
     if (todoResponse.status === 500) {
       setHasError(true);
       return;
     }
 
-    const todos = await todoResponse.json();
-    const users = await userResponse.json();
-
+    const todos = todoResponse;
+    const users = userResponse;
+  
     todos.forEach((todo) => {
       const user = users.find((user) => user.id === todo.userId);
       todo.user = user;
