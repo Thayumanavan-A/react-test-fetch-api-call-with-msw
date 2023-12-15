@@ -12,19 +12,23 @@ const TodoList = () => {
   useEffect(() => retrieveTodos(), []);
 
   const retrieveTodos =  async () => {
-    const todoResponse = await axios.get(todoUrl)
+    const todos = await axios.get(todoUrl)
                                     .then((res) => res.data)
                                     .catch((res) => console.log(res.status));
-    const userResponse = await axios.get(userUrl)
+    const users = await axios.get(userUrl)
                                     .then((res)=> res.data);
 
-    if (todoResponse.status === 500) {
+    const todoResponse = await axios.get(todoUrl)
+                                  .then((res)=>res.status);
+    console.log(todoResponse);
+    
+    if (todoResponse.status === 404) {
       setHasError(true);
       return;
     }
 
-    const todos = todoResponse;
-    const users = userResponse;
+     
+
   
     todos.forEach((todo) => {
       const user = users.find((user) => user.id === todo.userId);
